@@ -8,9 +8,10 @@ function funcA() {
     let b = 2; // 지역 스코프
     console.log(a);
 
-    function funcB() {
-        console.log("funcB");
-    }
+    // 지역 스코프
+    // function funcB() {
+    //     console.log("funcB");
+    // }
 }
 
 funcA();
@@ -24,8 +25,12 @@ if (true) {
 
 for (let i = 0; i < 10; i++) {
     let d = 1;
+    // 함수 블록 아닌 블록은 지역스코프 갖지 않는다.
+    function funcB() {
+        console.log("funcB");
+    }
 }
 
 // console.log(d); // Uncaught ReferenceError: d is not defined
 
-// funcB(); // Uncaught ReferenceError: funcB is not defined
+funcB(); // Uncaught ReferenceError: funcB is not defined
