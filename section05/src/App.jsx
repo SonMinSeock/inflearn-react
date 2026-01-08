@@ -1,5 +1,5 @@
 import './App.css';
-import Register from './components/Register';
+import HookExam from './components/HookExam';
 
 // 리액트 컴포넌트 리렌더링 조건 (불필요한 리렌더링 방지할려면 아래 조건 확인 해야한다.)
 // 1. state
@@ -9,7 +9,7 @@ import Register from './components/Register';
 function App() {
   return (
     <>
-      <Register />
+      <HookExam />
     </>
   );
 }
