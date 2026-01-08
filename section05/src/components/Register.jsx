@@ -4,9 +4,11 @@
 // 3. 국적
 // 4. 자기소개
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-export default function ReactComponent() {
+// let count = 0; // 권장 안함!
+
+export default function Register() {
   const [input, setInput] = useState({
     name: '',
     birth: '',
@@ -14,47 +16,33 @@ export default function ReactComponent() {
     bio: '',
   });
 
+  const countRef = useRef(0);
+  const inputRef = useRef();
+
   const onChange = (e) => {
+    countRef.current++;
+    // count++;
+    console.log(countRef.current);
+    // console.log(count);
     setInput({
       ...input,
       [e.target.name]: e.target.value,
     });
   };
 
-  //   const onChangeName = (e) => {
-  //     setInput({
-  //       ...input,
-  //       name: e.target.value,
-  //     });
-  //   };
-
-  //   const onChangeBirth = (e) => {
-  //     setInput({
-  //       ...input,
-  //       birth: e.target.value,
-  //     });
-  //   };
-
-  //   const onChangeCountry = (e) => {
-  //     setInput({
-  //       ...input,
-  //       country: e.target.value,
-  //     });
-  //   };
-
-  //   const onChangeBio = (e) => {
-  //     setInput({
-  //       ...input,
-  //       bio: e.target.value,
-  //     });
-  //   };
-
-  console.log(input);
+  const onSubmit = (e) => {
+    // 제출하기 전에 검수 작업 할려고한다.
+    // 사용자 입력 값 유무 확인
+    if (input.name === '') {
+      // 이름 입력 하지않으면 해당 입력창 포커스
+      inputRef.current.focus();
+    }
+  };
 
   return (
     <div>
       <div>
-        <input name="name" value={input.name} onChange={onChange} placeholder={'이름'} />
+        <input ref={inputRef} name="name" value={input.name} onChange={onChange} placeholder={'이름'} />
       </div>
       <div>
         <input type="date" name="birth" value={input.birth} onChange={onChange} />
@@ -70,6 +58,7 @@ export default function ReactComponent() {
       <div>
         <textarea name="bio" value={input.bio} onChange={onChange} />
       </div>
+      <button onClick={onSubmit}>제출</button>
     </div>
   );
 }
