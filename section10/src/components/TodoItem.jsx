@@ -27,25 +27,27 @@ function TodoItem({ id, isDone, content, date, onUpdate, onDelete }) {
  */
 
 // HOC -> 고차 컴포넌트
-export default memo(TodoItem, (prevProps, nextProps) => {
-  /**
-   * 이전 props와 현재 props의 id, isDone, content, date 변경되었는지 비교하고 return boolean 값으로 반환 하면된다.
-   */
-  // if (prevProps.id !== nextProps.id) return false;
-  // if (prevProps.content !== nextProps.content) return false;
-  // if (prevProps.isDone !== nextProps.isDone) return false;
-  // if (prevProps.date !== nextProps.date) return false;
+// export default memo(TodoItem, (prevProps, nextProps) => {
+//   /**
+//    * 이전 props와 현재 props의 id, isDone, content, date 변경되었는지 비교하고 return boolean 값으로 반환 하면된다.
+//    */
+//   // if (prevProps.id !== nextProps.id) return false;
+//   // if (prevProps.content !== nextProps.content) return false;
+//   // if (prevProps.isDone !== nextProps.isDone) return false;
+//   // if (prevProps.date !== nextProps.date) return false;
 
-  // return true;
+//   // return true;
 
-  if (
-    prevProps.id !== nextProps.id ||
-    prevProps.content !== nextProps.content ||
-    prevProps.isDone !== nextProps.isDone ||
-    prevProps.date !== nextProps.date
-  ) {
-    return false;
-  } else {
-    return true;
-  }
-});
+//   if (
+//     prevProps.id !== nextProps.id ||
+//     prevProps.content !== nextProps.content ||
+//     prevProps.isDone !== nextProps.isDone ||
+//     prevProps.date !== nextProps.date
+//   ) {
+//     return false;
+//   } else {
+//     return true;
+//   }
+// });
+
+export default memo(TodoItem);

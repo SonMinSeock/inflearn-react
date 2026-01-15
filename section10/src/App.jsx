@@ -1,4 +1,4 @@
-import { useState, useRef, useReducer } from 'react';
+import { useRef, useReducer, useCallback } from 'react';
 import './App.css';
 import Editor from './components/Editor';
 import Header from './components/Header';
@@ -27,9 +27,40 @@ function App() {
   const [todos, dispatch] = useReducer(reducer, mockData);
   const idRef = useRef(3);
 
-  // onCreate, onUpdate, onDelete 함수가 리렌더링 할때마다 함수를 다시 만든다. 즉 다른 주소값으로 저장되는거다.
+  /**
+   * onCreate, onUpdate, onDelete 함수가 리렌더링 할때마다 함수를 다시 만든다. 즉 다른 주소값으로 저장되는거다.
+   * onCreate, onUpdate, onDelete 함수를 초반에만 생성하고 리렌더링 할때 다시 생성 안하도록 하고 싶다.
+   * useCallback 훅 이용하면 된다.
+   */
 
-  const onCreate = (content) => {
+  // const onCreate = (content) => {
+  //   dispatch({
+  //     type: 'CREATE',
+  //     data: {
+  //       id: idRef.current++,
+  //       isDone: false,
+  //       content: content,
+  //       date: new Date().getTime(),
+  //     },
+  //   });
+  // };
+
+  // const onUpdate = (targetId) => {
+  //   dispatch({
+  //     type: 'UPDATE',
+  //     targetId: targetId,
+  //   });
+  // };
+
+  // const onDelete = (targetId) => {
+  //   dispatch({
+  //     type: 'DELETE',
+  //     targetId: targetId,
+  //   });
+  // };
+
+  // 마운트 할때만 함수 생성하고자 한다. deps를 빈 deps로 하면 된다.
+  const onCreate = useCallback((content) => {
     dispatch({
       type: 'CREATE',
       data: {
@@ -39,21 +70,21 @@ function App() {
         date: new Date().getTime(),
       },
     });
-  };
+  }, []);
 
-  const onUpdate = (targetId) => {
+  const onUpdate = useCallback((targetId) => {
     dispatch({
       type: 'UPDATE',
       targetId: targetId,
     });
-  };
+  }, []);
 
-  const onDelete = (targetId) => {
+  const onDelete = useCallback((targetId) => {
     dispatch({
       type: 'DELETE',
       targetId: targetId,
     });
-  };
+  }, []);
 
   return (
     <div className="app">
