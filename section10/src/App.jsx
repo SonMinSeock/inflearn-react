@@ -27,6 +27,8 @@ function App() {
   const [todos, dispatch] = useReducer(reducer, mockData);
   const idRef = useRef(3);
 
+  // onCreate, onUpdate, onDelete 함수가 리렌더링 할때마다 함수를 다시 만든다. 즉 다른 주소값으로 저장되는거다.
+
   const onCreate = (content) => {
     dispatch({
       type: 'CREATE',
