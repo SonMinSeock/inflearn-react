@@ -1,13 +1,13 @@
 import { useContext, useRef, useState } from 'react';
 import './Editor.css';
-import { TodoContext } from '../App';
+import { TodoDispatchContext } from '../App';
 export default function Editor() {
   /**
    * useContext 훅
    * Context Provider 통해 컨텍스트에 있는 데이터를 불러와서 사용하고자 한다.
    * useContext 훅을 이용해서 관련 데이터가 있는 컨텍스트를 임포트해서 인자로 받아서 컨텍스트 데이터를 봔한해준다.
    */
-  const { onCreate } = useContext(TodoContext);
+  const { onCreate } = useContext(TodoDispatchContext);
 
   const [content, setContent] = useState('');
   const contentRef = useRef();

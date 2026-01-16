@@ -1,4 +1,4 @@
-import { useRef, useReducer, useCallback, createContext } from 'react';
+import { useRef, useReducer, useCallback, createContext, useMemo } from 'react';
 import './App.css';
 import Editor from './components/Editor';
 import Header from './components/Header';
@@ -24,7 +24,10 @@ function reducer(state, action) {
 }
 
 // 투두리스트의 컨텍스트 만들어보기
-export const TodoContext = createContext();
+// 1. 상태 변경 될수 있는 컨텍스트 -> TodoStateContext
+// 2. 상태 변경 안하는거 컨텍스트 -> TodoDispatchContext
+export const TodoStateContext = createContext();
+export const TodoDispatchContext = createContext();
 
 function App() {
   const [todos, dispatch] = useReducer(reducer, mockData);
@@ -89,13 +92,21 @@ function App() {
     });
   }, []);
 
+  // onCreate, onUpdate, onDelete 메서드들로 이루어진 객체를 memoized 하기
+  // 이런 이유로 useMemo 훅 이용했다.
+  const memoizedDispatch = useMemo(() => {
+    return { onCreate, onUpdate, onDelete };
+  }, []);
+
   return (
     <div className="app">
       <Header />
-      <TodoContext.Provider value={{ todos, onCreate, onUpdate, onDelete }}>
-        <Editor />
-        <List />
-      </TodoContext.Provider>
+      <TodoStateContext.Provider value={todos}>
+        <TodoDispatchContext.Provider value={memoizedDispatch}>
+          <Editor />
+          <List />
+        </TodoDispatchContext.Provider>
+      </TodoStateContext.Provider>
       {/* <Exam /> */}
     </div>
   );
