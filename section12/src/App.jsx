@@ -4,6 +4,13 @@ import Diary from './pages/Diary';
 import New from './pages/New';
 import Notfound from './pages/Notfound';
 import { Route, Routes, Link, useNavigate } from 'react-router-dom';
+/**
+ * 아래 이미지들은 public 아니고 assets에 넣었을까?
+ * [이유]
+ * vite가 내부적으로 진행하는 이미지 최적화 설정 때문에 그렇다.
+ * 이미지 최적화 할게 아니면 assets 폴더 아닌 public 폴더에 넣어도 된다.
+ */
+import { getEmotionImage } from './util/get-emotion-image';
 
 // 1. "/" : 모든 일기를 조회하는 Home 페이지
 // 2. "/new" : 새로운 일기를 생성하는 New 페이지
@@ -37,6 +44,13 @@ function App() {
 
   return (
     <>
+      <div>
+        <img src={getEmotionImage(1)} alt="이모지" />
+        <img src={getEmotionImage(2)} alt="이모지" />
+        <img src={getEmotionImage(3)} alt="이모지" />
+        <img src={getEmotionImage(4)} alt="이모지" />
+        <img src={getEmotionImage(5)} alt="이모지" />
+      </div>
       <div>
         <Link to={'/'}>Home</Link>
         <Link to={'/new'}>New</Link>
