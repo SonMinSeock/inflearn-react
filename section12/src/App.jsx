@@ -3,8 +3,6 @@ import Home from './pages/Home';
 import Diary from './pages/Diary';
 import New from './pages/New';
 import Notfound from './pages/Notfound';
-import Button from './components/Button';
-import Header from './components/Header';
 import { Route, Routes, Link, useNavigate } from 'react-router-dom';
 /**
  * 아래 이미지들은 public 아니고 assets에 넣었을까?
@@ -13,10 +11,13 @@ import { Route, Routes, Link, useNavigate } from 'react-router-dom';
  * 이미지 최적화 할게 아니면 assets 폴더 아닌 public 폴더에 넣어도 된다.
  */
 import { getEmotionImage } from './util/get-emotion-image';
+import Edit from './pages/Edit';
+import { useReducer } from 'react';
 
 // 1. "/" : 모든 일기를 조회하는 Home 페이지
 // 2. "/new" : 새로운 일기를 생성하는 New 페이지
-// 3. "/diary" : 일기를 상세히 조회하는 Diary 페이지
+// 3. "/diary/:id" : 일기를 상세히 조회하는 Diary 페이지
+// 4. /edit/:id : 해당 일기를 편집하는 Edit 페이지
 
 /**
  * pathname이 위 3게 경로가 아니고 다른 경로로 요청하면 Notfound 컴포넌트를 렌더링 하고 싶으면,
@@ -37,53 +38,45 @@ import { getEmotionImage } from './util/get-emotion-image';
  * - 이벤트 핸들러 이용하여 특정 조건을 통해 페이지 이동하고 싶을때 사용한다.
  */
 
+/**
+ * mock data 임시데이터
+ * 일기장 데이터는 3개가 있다.
+ * 1. createdDate -> 일기 작성된 날짜
+ * 2. emotionId -> 이전에 만든 이모지 유틸리티 통해 해당 감정 이모지를 반환 해준다.
+ * 3. content -> 일기 내용
+ */
+const mockData = [
+  {
+    id: 1,
+    createdDate: new Date().getTime(),
+    emotionId: 1,
+    content: '1번 일기 내용',
+  },
+  {
+    id: 2,
+    createdDate: new Date().getTime(),
+    emotionId: 2,
+    content: '2번 일기 내용',
+  },
+];
+
+/**
+ * redcuer 함수
+ *
+ */
+function reducer(state, action) {
+  return state;
+}
+
 function App() {
-  const nav = useNavigate();
-
-  const onClickButton = () => {
-    nav('/new');
-  };
-
+  const [data, dispatch] = useReducer(reducer, mockData);
   return (
     <>
-      <Header title={'Header'} leftChild={<Button text={'Left'} />} rightChild={<Button text={'Right'} />} />
-      <Button
-        text={'123'}
-        onClick={() => {
-          console.log('123번 버튼 클릭!');
-        }}
-      />
-      <Button
-        text={'123'}
-        type={'POSITIVE'}
-        onClick={() => {
-          console.log('123번 버튼 클릭!');
-        }}
-      />
-      <Button
-        text={'123'}
-        type={'NEGATIVE'}
-        onClick={() => {
-          console.log('123번 버튼 클릭!');
-        }}
-      />
-      <div>
-        <img src={getEmotionImage(1)} alt="이모지" />
-        <img src={getEmotionImage(2)} alt="이모지" />
-        <img src={getEmotionImage(3)} alt="이모지" />
-        <img src={getEmotionImage(4)} alt="이모지" />
-        <img src={getEmotionImage(5)} alt="이모지" />
-      </div>
-      <div>
-        <Link to={'/'}>Home</Link>
-        <Link to={'/new'}>New</Link>
-        <Link to={'/diary'}>Diary</Link>
-      </div>
-      <button onClick={onClickButton}>New 페이지로 이동</button>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/new" element={<New />} />
         <Route path="/diary/:id" element={<Diary />} />
+        <Route path="/edit/:id" element={<Edit />} />
         <Route path="*" element={<Notfound />} />
       </Routes>
     </>
