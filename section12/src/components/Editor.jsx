@@ -28,11 +28,20 @@ const emotionList = [
   },
 ];
 
-export default function Editor({ onSubmit }) {
-  const [input, setInput] = useState({
-    createdDate: new Date(),
-    emotionId: 1,
-    content: '',
+export default function Editor({ initData, onSubmit }) {
+  const [input, setInput] = useState(() => {
+    if (initData) {
+      return {
+        ...initData,
+        createdDate: new Date(Number(initData.createdDate)),
+      };
+    } else {
+      return {
+        createdDate: new Date(),
+        emotionId: 1,
+        content: '',
+      };
+    }
   }); // 사용자가 입력한 데이터
 
   const nav = useNavigate();
