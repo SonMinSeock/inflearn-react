@@ -4,18 +4,14 @@ import Button from '../components/Button';
 import Editor from '../components/Editor';
 import { useContext, useEffect, useState } from 'react';
 import { DiaryDispatchContext, DiaryStateContext } from '../App';
+import useDiary from '../hooks/useDiary';
+import Loading from '../components/Loading';
 
 export default function Edit() {
   const { id } = useParams();
   const nav = useNavigate();
   const { onUpdate, onDelete } = useContext(DiaryDispatchContext);
-  const data = useContext(DiaryStateContext);
-  const [currentDiaryItem, setCurrentDiaryItem] = useState(() => {
-    // 해당 일기장을 찾는 로직
-    const item = data.find((item) => String(item.id) === String(id));
-    // 해당 일기장 있으면 일기장 데아터로 초기 상태값으로 할당, 없으면 null로 할당
-    return item ?? null;
-  });
+  const currentDiaryItem = useDiary(id);
 
   // 삭제하기 이벤트 핸들러
   const onClickDelete = () => {
@@ -35,15 +31,9 @@ export default function Edit() {
     }
   };
 
-  useEffect(() => {
-    // 해당 일기장이 있으면 아래 있는 로직들 (해당 일기장 찾는 로직) 수행 안함.
-    if (!currentDiaryItem) {
-      window.alert('존재하지 않는 일기입니다.');
-      // navigate 기능은 컴포넌트들이 다 마운트 하고 난뒤 수행한다. 즉 UI 다 그려져야 수행한다.
-      nav('/', { replace: true });
-      return;
-    }
-  }, [currentDiaryItem, nav]);
+  if (!currentDiaryItem) {
+    return <Loading />;
+  }
 
   return (
     <div>

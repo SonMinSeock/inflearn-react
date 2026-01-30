@@ -1,8 +1,30 @@
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import { getStringDate } from '../util/get-string-date';
+import Button from '../components/Button';
+import Viewer from '../components/Viewer';
+import useDiary from '../hooks/useDiary';
+import Loading from '../components/Loading';
 
 export default function Diary() {
-  // 라우터에 정의한 params를 받고 싶을때, useParams 훅을 이용하여 params 객체를 반환해준다.
   const params = useParams();
+  const currentDiary = useDiary(params.id);
+  const nav = useNavigate();
 
-  return <div>{params.id}번 일기입니다!</div>;
+  if (!currentDiary) {
+    return <Loading />;
+  }
+
+  const title = `${getStringDate(new Date(currentDiary.createdDate))} 기록`;
+
+  return (
+    <div>
+      <Header
+        title={title}
+        leftChild={<Button text={'< 뒤로 가기'} onClick={() => nav(-1)} />}
+        rightChild={<Button text={'수정하기'} onClick={() => nav(`/edit/${params.id}`)} />}
+      />
+      <Viewer {...currentDiary} />
+    </div>
+  );
 }
