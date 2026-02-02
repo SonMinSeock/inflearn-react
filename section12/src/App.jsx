@@ -3,16 +3,16 @@ import Home from './pages/Home';
 import Diary from './pages/Diary';
 import New from './pages/New';
 import Notfound from './pages/Notfound';
-import { Route, Routes, Link, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 /**
  * 아래 이미지들은 public 아니고 assets에 넣었을까?
  * [이유]
  * vite가 내부적으로 진행하는 이미지 최적화 설정 때문에 그렇다.
  * 이미지 최적화 할게 아니면 assets 폴더 아닌 public 폴더에 넣어도 된다.
  */
-import { getEmotionImage } from './util/get-emotion-image';
 import Edit from './pages/Edit';
-import { createContext, useReducer, useRef } from 'react';
+import { createContext, useEffect, useReducer, useRef, useState } from 'react';
+import Loading from './components/Loading';
 
 // 1. "/" : 모든 일기를 조회하는 Home 페이지
 // 2. "/new" : 새로운 일기를 생성하는 New 페이지
@@ -39,46 +39,35 @@ import { createContext, useReducer, useRef } from 'react';
  */
 
 /**
- * mock data 임시데이터
- * 일기장 데이터는 3개가 있다.
- * 1. createdDate -> 일기 작성된 날짜
- * 2. emotionId -> 이전에 만든 이모지 유틸리티 통해 해당 감정 이모지를 반환 해준다.
- * 3. content -> 일기 내용
- */
-const mockData = [
-  {
-    id: 1,
-    createdDate: new Date('2026-01-12').getTime(),
-    emotionId: 1,
-    content: '1번 일기 내용',
-  },
-  {
-    id: 2,
-    createdDate: new Date('2025-12-29').getTime(),
-    emotionId: 2,
-    content: '2번 일기 내용',
-  },
-  {
-    id: 3,
-    createdDate: new Date('2025-12-18').getTime(),
-    emotionId: 3,
-    content: '3번 일기 내용',
-  },
-];
-
-/**
  * redcuer 함수
  *
  */
 function reducer(state, action) {
+  let nextState;
+
   switch (action.type) {
-    case 'CREATE':
-      return [action.data, ...state];
-    case 'UPDATE':
-      return state.map((item) => (String(item.id) === String(action.data.id) ? action.data : item));
-    case 'DELETE':
-      return state.filter((item) => String(item.id) !== String(action.data));
+    case 'INIT':
+      return action.data;
+    case 'CREATE': {
+      nextState = [action.data, ...state];
+      break;
+    }
+    case 'UPDATE': {
+      nextState = state.map((item) => (String(item.id) === String(action.data.id) ? action.data : item));
+      break;
+    }
+    case 'DELETE': {
+      nextState = state.filter((item) => String(item.id) !== String(action.data));
+      break;
+    }
+    default:
+      return state;
   }
+
+  // 로컬스토리지 저장
+  localStorage.setItem('diary', JSON.stringify(nextState));
+
+  return nextState;
 }
 
 /**
@@ -88,8 +77,9 @@ export const DiaryStateContext = createContext();
 export const DiaryDispatchContext = createContext();
 
 function App() {
-  const [data, dispatch] = useReducer(reducer, mockData);
-  const idRef = useRef(3);
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, dispatch] = useReducer(reducer, []);
+  const idRef = useRef(0);
 
   // 새로운 일기 추가
   const onCreate = (createdDate, emotionId, content) => {
@@ -124,6 +114,48 @@ function App() {
       data: id,
     });
   };
+
+  useEffect(() => {
+    // 로컬스토리지 diary 데이터 불러오기
+    const storedData = localStorage.getItem('diary');
+
+    if (!storedData) {
+      setIsLoading(false);
+      return;
+    }
+
+    // json 파싱
+    const parsedData = JSON.parse(storedData);
+
+    // parsedData 배열 유무 확인
+    if (!Array.isArray(parsedData)) {
+      setIsLoading(false);
+      return;
+    }
+
+    // id 값 설정
+    let maxedId = 0;
+
+    parsedData.forEach((item) => {
+      if (Number(item.id) > maxedId) {
+        maxedId = Number(item.id);
+      }
+    });
+
+    idRef.current = maxedId + 1;
+
+    dispatch({
+      type: 'INIT',
+      data: parsedData,
+    });
+
+    setIsLoading(false);
+  }, []);
+
+  // 로딩 중 이면 페이지 컴포넌트 렌더링 하기전에 로딩 컴포넌트 렌더링하기
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
