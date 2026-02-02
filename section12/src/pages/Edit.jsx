@@ -6,12 +6,15 @@ import { useContext, useEffect, useState } from 'react';
 import { DiaryDispatchContext, DiaryStateContext } from '../App';
 import useDiary from '../hooks/useDiary';
 import Loading from '../components/Loading';
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function Edit() {
   const { id } = useParams();
   const nav = useNavigate();
   const { onUpdate, onDelete } = useContext(DiaryDispatchContext);
   const currentDiaryItem = useDiary(id);
+  // 페이지 탭 타이틀 수정
+  usePageTitle(`${id}번 일기 수정`);
 
   // 삭제하기 이벤트 핸들러
   const onClickDelete = () => {

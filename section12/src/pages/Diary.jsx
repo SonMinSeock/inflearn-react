@@ -5,11 +5,14 @@ import Button from '../components/Button';
 import Viewer from '../components/Viewer';
 import useDiary from '../hooks/useDiary';
 import Loading from '../components/Loading';
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function Diary() {
   const params = useParams();
   const currentDiary = useDiary(params.id);
   const nav = useNavigate();
+  // 페이지 탭 타이틀 수정
+  usePageTitle(`${params.id}번 일기`);
 
   if (!currentDiary) {
     return <Loading />;

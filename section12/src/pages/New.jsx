@@ -2,12 +2,15 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Editor from '../components/Editor';
 import Header from '../components/Header';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { DiaryDispatchContext } from '../App';
+import usePageTitle from '../hooks/usePageTitle';
 
 export default function New() {
   const nav = useNavigate(); // nav(-1) 호출 하면 뒤로가기로 수헹한다.
   const { onCreate } = useContext(DiaryDispatchContext);
+  // 페이지 탭 타이틀 수정
+  usePageTitle('새 일기 쓰기');
 
   const onSubmit = (input) => {
     onCreate(input.createdDate.getTime(), input.emotionId, input.content);
