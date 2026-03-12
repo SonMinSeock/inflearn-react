@@ -1,14 +1,22 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
+import Button from './components/Button';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const buttonProps = {
+    text: '메일',
+    color: 'red',
+    a: 1,
+    b: 2,
+    c: 3,
+  };
 
   return (
     <>
-      <h1>안녕 리액트!</h1>
+      <Button {...buttonProps} />
+      <Button text={'카페'} />
+      <Button text={'블로그'}>
+        <div>자식 요소</div>
+      </Button>
     </>
   );
 }
