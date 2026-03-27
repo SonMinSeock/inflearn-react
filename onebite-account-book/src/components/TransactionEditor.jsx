@@ -1,5 +1,5 @@
 import './TransactionEditor.css';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { TransactionDispatchContext } from '../contexts/context';
 import { useNavigate } from 'react-router';
 import { CATEGORIES } from '../lib/constants';
@@ -8,21 +8,31 @@ export default function TransactionEditor({ type, initData }) {
   const { onCreateTransaction, onUpdateTransaction } = useContext(TransactionDispatchContext);
   const navigate = useNavigate();
 
-  const [input, setInput] = useState({
-    name: '',
-    amount: '',
-    category: CATEGORIES[0],
-    date: new Date().toISOString().slice(0, 10),
-  });
-
-  useEffect(() => {
-    if (type === 'EDIT' && initData) {
-      setInput({
+  const [input, setInput] = useState(() => {
+    if (initData) {
+      return {
         ...initData,
         date: new Date(initData.date).toISOString().slice(0, 10),
-      });
+      };
     }
-  }, [type, initData]);
+
+    return {
+      name: '',
+      amount: '',
+      type: 'expense',
+      category: CATEGORIES[0],
+      date: new Date().toISOString().slice(0, 10),
+    };
+  });
+
+  const onChange = (event) => {
+    const { name, value } = event.target;
+
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const onSubmit = () => {
     if (!input.name.trim() || !input.amount.trim() || !input.category.trim() || !input.date) {
@@ -42,34 +52,31 @@ export default function TransactionEditor({ type, initData }) {
     <div className="TransactionEditor">
       <div>
         <div className="description">분류</div>
-        <select onChange={(e) => setInput({ ...input, type: e.target.value })}>
+        <select name="type" value={input.type} onChange={onChange}>
           <option value="expense">지출</option>
           <option value="income">수입</option>
         </select>
       </div>
+
       <div>
         <div className="description">지출/수입 이름</div>
         <input
           type="text"
-          id="name"
+          name="name"
           placeholder="지출 & 수입 이름을 입력하세요 ..."
           value={input.name}
-          onChange={(e) => setInput({ ...input, name: e.target.value })}
+          onChange={onChange}
         />
       </div>
+
       <div>
         <div className="description">지출/수입 금액</div>
-        <input
-          type="number"
-          id="amount"
-          placeholder="금액을 입력하세요"
-          value={input.amount}
-          onChange={(e) => setInput({ ...input, amount: e.target.value })}
-        />
+        <input type="number" name="amount" placeholder="금액을 입력하세요" value={input.amount} onChange={onChange} />
       </div>
+
       <div>
         <div className="description">카테고리</div>
-        <select onChange={(e) => setInput({ ...input, category: e.target.value })}>
+        <select name="category" value={input.category} onChange={onChange}>
           {CATEGORIES.map((category) => (
             <option key={category} value={category}>
               {category}
@@ -77,15 +84,12 @@ export default function TransactionEditor({ type, initData }) {
           ))}
         </select>
       </div>
+
       <div>
         <div className="description">날짜</div>
-        <input
-          type="date"
-          id="date"
-          value={input.date}
-          onChange={(e) => setInput({ ...input, date: e.target.value })}
-        />
+        <input type="date" name="date" value={input.date} onChange={onChange} />
       </div>
+
       <div className="button_container">
         <button className="submit_button" onClick={onSubmit}>
           저장
