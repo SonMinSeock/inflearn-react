@@ -1,7 +1,16 @@
+import { Route, Routes } from 'react-router';
+import Home from './pages/Home';
+import NewTransaction from './pages/NewTransaction';
+import EditTransaction from './pages/EditTransaction';
+
 function App() {
   return (
     <>
-      <div>Hello World</div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/new-transaction" element={<NewTransaction />} />
+        <Route path="/edit-transaction/:id" element={<EditTransaction />} />
+      </Routes>
     </>
   );
 }
