@@ -24,3 +24,5 @@ export const MOCK_DATA = [
     date: new Date().getTime() + 3,
   },
 ];
+
+export const CATEGORIES = ['🍚 식비', '💧 구독', '🏠 생활', '🏢 급여', '💰 금융'];
